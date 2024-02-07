@@ -14,16 +14,19 @@ class Server {
         this.routes();
     }
     listen() {
+        //Start the server
         this.app.listen(this.port, () => {
             console.log("Servidor corriendo en el puerto: " + this.port);
         });
     }
     middlewares() {
+        //used middlewares
         this.app.use(express_1.default.json());
     }
     routes() {
-        this.app.use("/api", usuarios_1.default);
-        this.app.use("/api", category_1.default);
+        //API routes
+        this.app.use("/api/v1", usuarios_1.default);
+        this.app.use("/api/v1", category_1.default);
     }
 }
 exports.default = Server;

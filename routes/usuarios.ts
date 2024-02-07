@@ -1,15 +1,19 @@
 import { Router } from "express";
-import { getUsers, saveUsers } from "../controllers/users/usuariosController";
-import { login } from "../controllers/users/Auth/AuthUsersController";
+import { getUsers, getUserById } from "../controllers/users/usuariosController";
+import { create, login, renew } from "../controllers/users/Auth/AuthUsersController";
 import { validateJWT } from "../middlewares/validate-jwt"
 const router: Router = Router();
 
 router.get("/users", [
     validateJWT
 ], getUsers);
-router.post("/users", saveUsers);
 
-router.post("/auth/users", login);
+
+router.get("/users/:id", [validateJWT], getUserById);
+
+router.post("/auth/users/create", create);
+router.post("/auth/users/login", login);
+router.post("/auth/users/renew", [validateJWT], renew);
 
 
 export default router;

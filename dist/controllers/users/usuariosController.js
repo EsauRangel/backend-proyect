@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.saveUsers = exports.getUsers = void 0;
+exports.getUserById = exports.getUsers = void 0;
 const client_1 = require("@prisma/client");
 const express_1 = require("express");
 const prisma = new client_1.PrismaClient();
@@ -51,17 +51,28 @@ const getUsers = (req = express_1.request, res = express_1.response) => __awaite
     }
 });
 exports.getUsers = getUsers;
-const saveUsers = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const user = yield prisma.user.create({ data: req.body });
+        let { id } = req.params;
+        const userId = parseInt(id);
+        const user = yield prisma.user.findFirst({ where: { id: userId } });
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                msg: "Usuario no encontrado."
+            });
+        }
         return res.json({
             success: "ok",
             user
         });
     }
     catch (error) {
-        console.log(error);
+        return res.status(500).json({
+            success: false,
+            msg: error
+        });
     }
 });
-exports.saveUsers = saveUsers;
+exports.getUserById = getUserById;
 //# sourceMappingURL=usuariosController.js.map
