@@ -1,5 +1,5 @@
 import { PrismaClient } from '@prisma/client'
-import { request, response } from 'express'
+import { Request, Response } from 'express'
 const prisma = new PrismaClient();
 
 interface ReqParams {
@@ -8,7 +8,7 @@ interface ReqParams {
     q?: string
 }
 
-export const getUsers = async (req = request, res = response) => {
+export const getUsers = async (req: Request, res: Response) => {
 
     try {
         const { per_page = '5', page = '1', q = '' }: ReqParams = req.query;
@@ -34,6 +34,9 @@ export const getUsers = async (req = request, res = response) => {
                     }
                 ]
             },
+            include: {
+                categories: true
+            }
         })
 
 
@@ -52,16 +55,19 @@ export const getUsers = async (req = request, res = response) => {
     }
 }
 
-export const getUserById = async (req = request, res = response) => {
+export const getUserById = async (req: Request, res: Response) => {
 
     try {
         let { id } = req.params;
         const userId: number = parseInt(id);
-        const user = await prisma.user.findFirst({ where:{id: userId} });
+        const user = await prisma.user.findFirst({
+            where: { id: userId },
+            include: { categories: true }
+        });
 
-        if(!user){
+        if (!user) {
             return res.status(401).json({
-                success: false, 
+                success: false,
                 msg: "Usuario no encontrado."
             });
         }

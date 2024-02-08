@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.saveCategory = exports.getCategories = void 0;
 const client_1 = require("@prisma/client");
-const express_1 = require("express");
 const prisma = new client_1.PrismaClient();
-const getCategories = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
+const getCategories = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const categories = yield prisma.category.findMany();
     return res.json({
         success: "ok",
@@ -21,7 +20,7 @@ const getCategories = (req = express_1.request, res = express_1.response) => __a
     });
 });
 exports.getCategories = getCategories;
-const saveCategory = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
+const saveCategory = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const category = yield prisma.category.create({ data: req.body });
     return res.status(201).json({
         success: "ok",

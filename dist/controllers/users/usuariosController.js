@@ -11,9 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUserById = exports.getUsers = void 0;
 const client_1 = require("@prisma/client");
-const express_1 = require("express");
 const prisma = new client_1.PrismaClient();
-const getUsers = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { per_page = '5', page = '1', q = '' } = req.query;
         //Pagination
@@ -35,6 +34,9 @@ const getUsers = (req = express_1.request, res = express_1.response) => __awaite
                     }
                 ]
             },
+            include: {
+                categories: true
+            }
         });
         if (users) {
             return res.json({
@@ -51,11 +53,14 @@ const getUsers = (req = express_1.request, res = express_1.response) => __awaite
     }
 });
 exports.getUsers = getUsers;
-const getUserById = (req = express_1.request, res = express_1.response) => __awaiter(void 0, void 0, void 0, function* () {
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         let { id } = req.params;
         const userId = parseInt(id);
-        const user = yield prisma.user.findFirst({ where: { id: userId } });
+        const user = yield prisma.user.findFirst({
+            where: { id: userId },
+            include: { categories: true }
+        });
         if (!user) {
             return res.status(401).json({
                 success: false,
